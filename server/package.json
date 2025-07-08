@@ -1,0 +1,16 @@
+{
+  "name": "trpc-crud-server",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "author": "phoenixfusionx",
+  "keywords": [
+    "Express",
+    "TypeScript",
+    "tRPC",
+    "Zod"
+  ],
+  "scripts": {
+    "start": "src/server.ts"
+  }
+}
