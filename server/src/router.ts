@@ -104,6 +104,41 @@ export const appRouter = router({
         updatedAt: task.updated_at,
       };
     }),
+
+  updateTask: publicProcedure
+    .input(updateTaskSchema)
+    .mutation(async ({ input }) => {
+      const updateData: any = {};
+
+      if (input.title !== undefined) updateData.title = input.title;
+      if (input.description !== undefined)
+        updateData.description = input.description;
+      if (input.completed !== undefined) updateData.completed = input.completed;
+      if (input.priority !== undefined) updateData.priority = input.priority;
+      if (input.dueDate !== undefined) updateData.due_date = input.dueDate;
+
+      const { data: task, error } = await supabase
+        .from("tasks")
+        .update(updateData)
+        .eq("id", input.id)
+        .select()
+        .single();
+
+      if (error) {
+        throw new Error(`Failed to update task: ${error.message}`);
+      }
+
+      return {
+        id: task.id,
+        title: task.title,
+        description: task.description,
+        completed: task.completed,
+        priority: task.priority,
+        dueDate: task.due_date,
+        createdAt: task.created_at,
+        updatedAt: task.updated_at,
+      };
+    }),
 });
 
 export type AppRouter = typeof appRouter;
