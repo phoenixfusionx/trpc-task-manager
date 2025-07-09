@@ -1,6 +1,7 @@
 import { initTRPC } from "@trpc/server";
 import { z } from "zod";
 import { Context } from "./context.js";
+import { supabase, Task } from "./lib/supabase.js";
 
 const t = initTRPC.context<Context>().create();
 
@@ -24,8 +25,28 @@ const updateTaskSchema = z.object({
 });
 
 export const appRouter = router({
-  hello: publicProcedure.query(async () => {
-    return "Hello World";
+  getTasks: publicProcedure.query(async () => {
+    const { data: tasks, error } = await supabase
+      .from("tasks")
+      .select("*")
+      .order("created_at", { ascending: false });
+
+    if (error) {
+      throw new Error(`Failed to fetch tasks: ${error.message}`);
+    }
+
+    return (
+      tasks?.map((task) => ({
+        id: task.id,
+        title: task.title,
+        description: task.description,
+        completed: task.completed,
+        priority: task.priority,
+        dueDate: task.due_date,
+        createdAt: task.created_at,
+        updatedAt: task.updated_at,
+      })) || []
+    );
   }),
 });
 
