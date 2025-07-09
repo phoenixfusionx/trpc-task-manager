@@ -48,6 +48,31 @@ export const appRouter = router({
       })) || []
     );
   }),
+
+  getTask: publicProcedure
+    .input(z.object({ id: z.string() }))
+    .query(async ({ input }) => {
+      const { data: task, error } = await supabase
+        .from("tasks")
+        .select("*")
+        .eq("id", input.id)
+        .single();
+
+      if (error) {
+        throw new Error(`Task not found: ${error.message}`);
+      }
+
+      return {
+        id: task.id,
+        title: task.title,
+        description: task.description,
+        completed: task.completed,
+        priority: task.priority,
+        dueDate: task.due_date,
+        createdAt: task.created_at,
+        updatedAt: task.updated_at,
+      };
+    }),
 });
 
 export type AppRouter = typeof appRouter;
