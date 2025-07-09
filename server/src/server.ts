@@ -11,6 +11,16 @@ const supabaseURL = process.env.SUPABASE_URL;
 app.use(cors());
 app.use(express.json());
 
+if (!process.env.SUPABASE_URL || !process.env.SUPABASE_ANON_KEY) {
+  console.error("❌ Missing required environment variables:");
+  console.error("   - SUPABASE_URL");
+  console.error("   - SUPABASE_ANON_KEY");
+  console.error(
+    "Please create a .env file in the server directory with these variables."
+  );
+  process.exit(1);
+}
+
 app.listen(port, () => {
   console.log(`Server running on http://localhost:${port}`);
   console.log(`Connected to Supabase: ${supabaseURL}`);
