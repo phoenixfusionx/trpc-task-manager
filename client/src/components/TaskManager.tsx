@@ -1,9 +1,30 @@
-import React from "react";
+import React, { useState } from "react";
 import { trpc } from "../utils/trpc";
 import { Plus, Loader2 } from "lucide-react";
+import { TaskFilters } from "./TaskFilters";
+import { TaskList } from "./TaskList";
+import { TaskForm } from "./TaskForm";
 
 export const TaskManager: React.FC = () => {
+  const [isFormOpen, setIsFormOpen] = useState(false);
+  const [filter, setFilter] = useState<"all" | "active" | "completed">("all");
+  const [priorityFilter, setPriorityFilter] = useState<
+    "all" | "low" | "medium" | "high"
+  >("all");
+
   const { data: tasks, isLoading, error } = trpc.getTasks.useQuery();
+
+  const filteredTasks = tasks?.filter((task) => {
+    const statusMatch =
+      filter === "all" ||
+      (filter === "active" && !task.completed) ||
+      (filter === "completed" && task.completed);
+
+    const priorityMatch =
+      priorityFilter === "all" || task.priority === priorityFilter;
+
+    return statusMatch && priorityMatch;
+  });
 
   if (isLoading) {
     return (
@@ -36,6 +57,22 @@ export const TaskManager: React.FC = () => {
           <span>Add Task</span>
         </button>
       </div>
+
+      <TaskFilters
+        filter={filter}
+        onFilterChange={setFilter}
+        priorityFilter={priorityFilter}
+        onPriorityFilterChange={setPriorityFilter}
+      />
+
+      <TaskList tasks={filteredTasks || []} />
+
+      {isFormOpen && (
+        <TaskForm
+          onClose={() => setIsFormOpen(false)}
+          onSuccess={() => setIsFormOpen(false)}
+        />
+      )}
     </div>
   );
 };
