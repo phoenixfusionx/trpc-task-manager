@@ -1,4 +1,5 @@
 import React from "react";
+import { TaskCard } from "./TaskCard";
 
 interface Task {
   id: string;
@@ -44,9 +45,9 @@ export const TaskList: React.FC<TaskListProps> = ({ tasks }) => {
 
   return (
     <div className="space-y-4">
-      {tasks.map((task, idx) => {
-        return <div>{idx}</div>;
-      })}
+      {tasks.map((task) => (
+        <TaskCard key={task.id} task={task} />
+      ))}
     </div>
   );
 };
