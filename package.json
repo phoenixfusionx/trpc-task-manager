@@ -1,8 +1,21 @@
 {
   "name": "trpc-crud-project",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
   "type": "module",
+  "author": "phoenixfusionx",
+  "keywords": [
+    "React",
+    "TypeScript",
+    "Tailwind CSS",
+    "tRPC",
+    "React Query",
+    "Lucide Icons",
+    "Vite",
+    "Node.js",
+    "Supabase",
+    "Zod"
+  ],
   "scripts": {
     "dev": "concurrently \"npm run dev:server\" \"npm run dev:client\"",
     "dev:client": "cd client && npm run dev",
