@@ -139,6 +139,21 @@ export const appRouter = router({
         updatedAt: task.updated_at,
       };
     }),
+
+  deleteTask: publicProcedure
+    .input(z.object({ id: z.string() }))
+    .mutation(async ({ input }) => {
+      const { error } = await supabase
+        .from("tasks")
+        .delete()
+        .eq("id", input.id);
+
+      if (error) {
+        throw new Error(`Failed to delete task: ${error.message}`);
+      }
+
+      return { success: true };
+    }),
 });
 
 export type AppRouter = typeof appRouter;
