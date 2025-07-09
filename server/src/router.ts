@@ -154,6 +154,42 @@ export const appRouter = router({
 
       return { success: true };
     }),
+
+  toggleTask: publicProcedure
+    .input(z.object({ id: z.string() }))
+    .mutation(async ({ input }) => {
+      const { data: currentTask, error: fetchError } = await supabase
+        .from("tasks")
+        .select("completed")
+        .eq("id", input.id)
+        .single();
+
+      if (fetchError) {
+        throw new Error(`Task not found: ${fetchError.message}`);
+      }
+
+      const { data: task, error } = await supabase
+        .from("tasks")
+        .update({ completed: !currentTask.completed })
+        .eq("id", input.id)
+        .select()
+        .single();
+
+      if (error) {
+        throw new Error(`Failed to toggle task: ${error.message}`);
+      }
+
+      return {
+        id: task.id,
+        title: task.title,
+        description: task.description,
+        completed: task.completed,
+        priority: task.priority,
+        dueDate: task.due_date,
+        createdAt: task.created_at,
+        updatedAt: task.updated_at,
+      };
+    }),
 });
 
 export type AppRouter = typeof appRouter;
