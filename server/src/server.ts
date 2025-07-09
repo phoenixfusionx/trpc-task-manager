@@ -1,5 +1,8 @@
 import express from "express";
 import cors from "cors";
+import * as trpcExpress from "@trpc/server/adapters/express";
+import { appRouter } from "./router.js";
+import { createContext } from "./context.js";
 import dotenv from "dotenv";
 
 dotenv.config();
@@ -20,6 +23,14 @@ if (!process.env.SUPABASE_URL || !process.env.SUPABASE_ANON_KEY) {
   );
   process.exit(1);
 }
+
+app.use(
+  "/trpc",
+  trpcExpress.createExpressMiddleware({
+    router: appRouter,
+    createContext,
+  })
+);
 
 app.listen(port, () => {
   console.log(`Server running on http://localhost:${port}`);
