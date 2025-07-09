@@ -8,6 +8,7 @@ import {
   Calendar,
   AlertCircle,
 } from "lucide-react";
+import { TaskForm } from "./TaskForm";
 
 interface Task {
   id: string;
@@ -171,7 +172,13 @@ export const TaskCard: React.FC<TaskCardProps> = ({ task }) => {
         </div>
       </div>
 
-      {isEditing && <div>Form</div>}
+      {isEditing && (
+        <TaskForm
+          task={task}
+          onClose={() => setIsEditing(false)}
+          onSuccess={() => setIsEditing(false)}
+        />
+      )}
     </>
   );
 };
