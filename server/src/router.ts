@@ -73,6 +73,37 @@ export const appRouter = router({
         updatedAt: task.updated_at,
       };
     }),
+
+  createTask: publicProcedure
+    .input(createTaskSchema)
+    .mutation(async ({ input }) => {
+      const { data: task, error } = await supabase
+        .from("tasks")
+        .insert({
+          title: input.title,
+          description: input.description || "",
+          completed: false,
+          priority: input.priority,
+          due_date: input.dueDate || null,
+        })
+        .select()
+        .single();
+
+      if (error) {
+        throw new Error(`Failed to create task: ${error.message}`);
+      }
+
+      return {
+        id: task.id,
+        title: task.title,
+        description: task.description,
+        completed: task.completed,
+        priority: task.priority,
+        dueDate: task.due_date,
+        createdAt: task.created_at,
+        updatedAt: task.updated_at,
+      };
+    }),
 });
 
 export type AppRouter = typeof appRouter;
